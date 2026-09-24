@@ -2,14 +2,6 @@
 
 An empirical performance evaluation comparing **Type-1 (Bare-Metal)** and **Type-2 (Hosted)** hypervisors under standardized computational CPU workloads.
 
----
-
-### Author Metadata
-
-- **Name:** Mehak Sayed Yusuf
-- **USN:** 01FE24BCI012
-- **Division:** B | **Roll No.:** 202
-- **Course:** Cloud Computing Laboratory
 
 ---
 
