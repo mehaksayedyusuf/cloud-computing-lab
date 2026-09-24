@@ -2,14 +2,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
-# Create output directory
 os.makedirs('images', exist_ok=True)
 
-# Set styling
+# Styling configuration
 plt.style.use('seaborn-v0_8-whitegrid' if 'seaborn-v0_8-whitegrid' in plt.style.available else 'default')
 fig_dpi = 300
 
-# Actual Experimental Benchmark Values (Mehak Sayed Yusuf - Sysbench 20k Primes)
+# Distinct refined color palette
+c_type1 = '#1d4ed8'  # Deep Blue (Proxmox VE)
+c_type2 = '#d97706'  # Amber / Warm Bronze (VMware Workstation)
+
 hypervisors = ['Proxmox VE\n(Type-1 Bare-Metal)', 'VMware Workstation\n(Type-2 Hosted)']
 eps_values = [1587.47, 1440.80]
 events_values = [15877, 14410]
@@ -21,133 +23,133 @@ pct_eps_diff = ((1587.47 - 1440.80) / 1440.80) * 100
 diff_events = 15877 - 14410
 
 # -------------------------------------------------------------------------
-# Plot 1: Events Per Second (Throughput)
+# Chart 1: CPU Processing Throughput (Events per Second)
 # -------------------------------------------------------------------------
-fig, ax = plt.subplots(figsize=(8, 6), dpi=fig_dpi)
-bars = ax.bar(hypervisors, eps_values, color=['#0052cc', '#e65100'], width=0.45, edgecolor='black', linewidth=1.2)
+fig, ax = plt.subplots(figsize=(7.5, 5.5), dpi=fig_dpi)
+bars = ax.bar(hypervisors, eps_values, color=[c_type1, c_type2], width=0.42, edgecolor='#1e293b', linewidth=1.1)
 
-ax.set_ylabel('Events per Second (EPS)', fontsize=12, fontweight='bold')
-ax.set_title('CPU Throughput Comparison (Sysbench 20k Primes)', fontsize=14, fontweight='bold', pad=15)
+ax.set_ylabel('Events per Second (Throughput)', fontsize=11, fontweight='600')
+ax.set_title('CPU Benchmark Throughput (Sysbench Prime Computation)', fontsize=13, fontweight='bold', pad=14)
 ax.set_ylim(0, 1950)
 
 for bar in bars:
-    height = bar.get_height()
-    ax.annotate(f'{height:,.2f} eps',
-                xy=(bar.get_x() + bar.get_width() / 2, height),
+    h = bar.get_height()
+    ax.annotate(f'{h:,.2f} EPS',
+                xy=(bar.get_x() + bar.get_width() / 2, h),
                 xytext=(0, 6),
                 textcoords="offset points",
-                ha='center', va='bottom', fontsize=11, fontweight='bold')
+                ha='center', va='bottom', fontsize=10.5, fontweight='bold')
 
-ax.text(0.5, 0.85, f'Proxmox VE is +{pct_eps_diff:.2f}% faster\nin CPU Throughput', 
-        transform=ax.transAxes, fontsize=12, fontweight='bold', ha='center',
-        bbox=dict(boxstyle="round,pad=0.5", facecolor='#e8f4f8', edgecolor='#0052cc', alpha=0.9))
+ax.text(0.5, 0.86, f'Proxmox VE (Type-1) delivers +{pct_eps_diff:.2f}%\nhigher processing throughput', 
+        transform=ax.transAxes, fontsize=11, fontweight='600', ha='center',
+        bbox=dict(boxstyle="round,pad=0.55", facecolor='#eff6ff', edgecolor='#93c5fd', alpha=0.95))
 
 plt.tight_layout()
 plt.savefig('images/events_per_second_comparison.png')
 plt.close()
 
 # -------------------------------------------------------------------------
-# Plot 2: Latency Comparison (Min, Avg, 95th Pct, Max)
+# Chart 2: Latency Distribution Profile
 # -------------------------------------------------------------------------
-fig, ax = plt.subplots(figsize=(10, 6), dpi=fig_dpi)
+fig, ax = plt.subplots(figsize=(9.5, 5.5), dpi=fig_dpi)
 x = np.arange(len(metrics))
-width = 0.35
+width = 0.32
 
-rects1 = ax.bar(x - width/2, proxmox_lat, width, label='Proxmox VE (Type-1)', color='#0052cc', edgecolor='black', linewidth=1)
-rects2 = ax.bar(x + width/2, vmware_lat, width, label='VMware Workstation (Type-2)', color='#e65100', edgecolor='black', linewidth=1)
+rects1 = ax.bar(x - width/2, proxmox_lat, width, label='Proxmox VE (Type-1)', color=c_type1, edgecolor='#1e293b', linewidth=1)
+rects2 = ax.bar(x + width/2, vmware_lat, width, label='VMware Workstation (Type-2)', color=c_type2, edgecolor='#1e293b', linewidth=1)
 
-ax.set_ylabel('Latency (milliseconds ms)', fontsize=12, fontweight='bold')
-ax.set_title('Sysbench CPU Latency Metrics Comparison (Lower is Better)', fontsize=14, fontweight='bold', pad=15)
+ax.set_ylabel('Latency (milliseconds)', fontsize=11, fontweight='600')
+ax.set_title('Sysbench CPU Latency Profile (Lower is Better)', fontsize=13, fontweight='bold', pad=14)
 ax.set_xticks(x)
-ax.set_xticklabels(metrics, fontsize=11, fontweight='bold')
-ax.legend(fontsize=11, loc='upper left')
-ax.set_ylim(0, 2.5)
+ax.set_xticklabels(metrics, fontsize=10.5, fontweight='600')
+ax.legend(fontsize=10.5, loc='upper left', frameon=True)
+ax.set_ylim(0, 2.4)
 
 for rect in rects1:
     h = rect.get_height()
     ax.annotate(f'{h:.2f} ms', xy=(rect.get_x() + rect.get_width()/2, h), xytext=(0, 4),
-                textcoords="offset points", ha='center', va='bottom', fontsize=9, fontweight='bold', color='#003399')
+                textcoords="offset points", ha='center', va='bottom', fontsize=9, fontweight='600', color='#1e3a8a')
 
 for rect in rects2:
     h = rect.get_height()
     ax.annotate(f'{h:.2f} ms', xy=(rect.get_x() + rect.get_width()/2, h), xytext=(0, 4),
-                textcoords="offset points", ha='center', va='bottom', fontsize=9, fontweight='bold', color='#b33c00')
+                textcoords="offset points", ha='center', va='bottom', fontsize=9, fontweight='600', color='#7c2d12')
 
 plt.tight_layout()
 plt.savefig('images/latency_comparison.png')
 plt.close()
 
 # -------------------------------------------------------------------------
-# Plot 3: Total Events Comparison
+# Chart 3: Total Computation Events
 # -------------------------------------------------------------------------
-fig, ax = plt.subplots(figsize=(8, 6), dpi=fig_dpi)
-bars = ax.bar(hypervisors, events_values, color=['#0052cc', '#e65100'], width=0.45, edgecolor='black', linewidth=1.2)
+fig, ax = plt.subplots(figsize=(7.5, 5.5), dpi=fig_dpi)
+bars = ax.bar(hypervisors, events_values, color=[c_type1, c_type2], width=0.42, edgecolor='#1e293b', linewidth=1.1)
 
-ax.set_ylabel('Total Events Processed (in 10 seconds)', fontsize=12, fontweight='bold')
-ax.set_title('Total Sysbench Prime Calculation Events', fontsize=14, fontweight='bold', pad=15)
+ax.set_ylabel('Total Events Executed (10s Window)', fontsize=11, fontweight='600')
+ax.set_title('Total Computational Workload Executed', fontsize=13, fontweight='bold', pad=14)
 ax.set_ylim(0, 19000)
 
 for bar in bars:
-    height = bar.get_height()
-    ax.annotate(f'{height:,} events',
-                xy=(bar.get_x() + bar.get_width() / 2, height),
+    h = bar.get_height()
+    ax.annotate(f'{h:,} events',
+                xy=(bar.get_x() + bar.get_width() / 2, h),
                 xytext=(0, 6),
                 textcoords="offset points",
-                ha='center', va='bottom', fontsize=11, fontweight='bold')
+                ha='center', va='bottom', fontsize=10.5, fontweight='bold')
 
-ax.text(0.5, 0.85, f'Proxmox VE processed +{diff_events:,} more events\n({pct_eps_diff:.2f}% higher capacity)', 
-        transform=ax.transAxes, fontsize=12, fontweight='bold', ha='center',
-        bbox=dict(boxstyle="round,pad=0.5", facecolor='#e8f4f8', edgecolor='#0052cc', alpha=0.9))
+ax.text(0.5, 0.86, f'Proxmox VE completed +{diff_events:,} more events\n({pct_eps_diff:.2f}% additional compute capacity)', 
+        transform=ax.transAxes, fontsize=11, fontweight='600', ha='center',
+        bbox=dict(boxstyle="round,pad=0.55", facecolor='#eff6ff', edgecolor='#93c5fd', alpha=0.95))
 
 plt.tight_layout()
 plt.savefig('images/total_events_comparison.png')
 plt.close()
 
 # -------------------------------------------------------------------------
-# Plot 4: Comprehensive Performance Dashboard
+# Chart 4: Multi-Metric Performance Overview
 # -------------------------------------------------------------------------
-fig, axs = plt.subplots(2, 2, figsize=(14, 10), dpi=fig_dpi)
-fig.suptitle('Performance Analysis Dashboard: Type-1 (Proxmox VE) vs Type-2 (VMware Workstation)', 
-             fontsize=16, fontweight='bold', y=0.98)
+fig, axs = plt.subplots(2, 2, figsize=(13, 9.5), dpi=fig_dpi)
+fig.suptitle('Comparative Hypervisor Performance: Proxmox VE vs VMware Workstation', 
+             fontsize=15, fontweight='bold', y=0.98)
 
-# Subplot 1: EPS
-axs[0, 0].bar(hypervisors, eps_values, color=['#0052cc', '#e65100'], width=0.4, edgecolor='black')
-axs[0, 0].set_title('Events per Second (Higher is Better)', fontsize=12, fontweight='bold')
-axs[0, 0].set_ylabel('Events / sec', fontsize=10)
+# Panel 1: Throughput
+axs[0, 0].bar(hypervisors, eps_values, color=[c_type1, c_type2], width=0.38, edgecolor='#1e293b')
+axs[0, 0].set_title('Throughput (EPS) - Higher is Better', fontsize=11.5, fontweight='bold')
+axs[0, 0].set_ylabel('EPS', fontsize=10)
 for bar in axs[0, 0].patches:
     axs[0, 0].annotate(f'{bar.get_height():,.2f}', (bar.get_x() + bar.get_width()/2, bar.get_height()),
-                       xytext=(0, 4), textcoords="offset points", ha='center', va='bottom', fontweight='bold')
+                       xytext=(0, 4), textcoords="offset points", ha='center', va='bottom', fontweight='bold', fontsize=9.5)
 
-# Subplot 2: Total Events
-axs[0, 1].bar(hypervisors, events_values, color=['#0052cc', '#e65100'], width=0.4, edgecolor='black')
-axs[0, 1].set_title('Total Events in 10s (Higher is Better)', fontsize=12, fontweight='bold')
-axs[0, 1].set_ylabel('Total Events', fontsize=10)
+# Panel 2: Total Events
+axs[0, 1].bar(hypervisors, events_values, color=[c_type1, c_type2], width=0.38, edgecolor='#1e293b')
+axs[0, 1].set_title('Total Events (10s) - Higher is Better', fontsize=11.5, fontweight='bold')
+axs[0, 1].set_ylabel('Events Count', fontsize=10)
 for bar in axs[0, 1].patches:
     axs[0, 1].annotate(f'{int(bar.get_height()):,}', (bar.get_x() + bar.get_width()/2, bar.get_height()),
-                       xytext=(0, 4), textcoords="offset points", ha='center', va='bottom', fontweight='bold')
+                       xytext=(0, 4), textcoords="offset points", ha='center', va='bottom', fontweight='bold', fontsize=9.5)
 
-# Subplot 3: Average Latency
+# Panel 3: Mean Latency
 avg_lats = [0.63, 0.69]
-axs[1, 0].bar(hypervisors, avg_lats, color=['#0052cc', '#e65100'], width=0.4, edgecolor='black')
-axs[1, 0].set_title('Average Latency (Lower is Better)', fontsize=12, fontweight='bold')
-axs[1, 0].set_ylabel('Latency (ms)', fontsize=10)
-axs[1, 0].set_ylim(0, 1.0)
+axs[1, 0].bar(hypervisors, avg_lats, color=[c_type1, c_type2], width=0.38, edgecolor='#1e293b')
+axs[1, 0].set_title('Average Latency - Lower is Better', fontsize=11.5, fontweight='bold')
+axs[1, 0].set_ylabel('ms', fontsize=10)
+axs[1, 0].set_ylim(0, 0.95)
 for bar in axs[1, 0].patches:
     axs[1, 0].annotate(f'{bar.get_height():.2f} ms', (bar.get_x() + bar.get_width()/2, bar.get_height()),
-                       xytext=(0, 4), textcoords="offset points", ha='center', va='bottom', fontweight='bold')
+                       xytext=(0, 4), textcoords="offset points", ha='center', va='bottom', fontweight='bold', fontsize=9.5)
 
-# Subplot 4: 95th Percentile Latency
+# Panel 4: 95th Percentile Latency
 p95_lats = [0.65, 0.90]
-axs[1, 1].bar(hypervisors, p95_lats, color=['#0052cc', '#e65100'], width=0.4, edgecolor='black')
-axs[1, 1].set_title('95th Percentile Latency (Lower is Better)', fontsize=12, fontweight='bold')
-axs[1, 1].set_ylabel('Latency (ms)', fontsize=10)
+axs[1, 1].bar(hypervisors, p95_lats, color=[c_type1, c_type2], width=0.38, edgecolor='#1e293b')
+axs[1, 1].set_title('95th Percentile Latency - Lower is Better', fontsize=11.5, fontweight='bold')
+axs[1, 1].set_ylabel('ms', fontsize=10)
 axs[1, 1].set_ylim(0, 1.2)
 for bar in axs[1, 1].patches:
     axs[1, 1].annotate(f'{bar.get_height():.2f} ms', (bar.get_x() + bar.get_width()/2, bar.get_height()),
-                       xytext=(0, 4), textcoords="offset points", ha='center', va='bottom', fontweight='bold')
+                       xytext=(0, 4), textcoords="offset points", ha='center', va='bottom', fontweight='bold', fontsize=9.5)
 
 plt.tight_layout(rect=[0, 0, 1, 0.95])
 plt.savefig('images/overall_performance_dashboard.png')
 plt.close()
 
-print('All 4 plots generated successfully in images/ folder.')
+print('Refined plots successfully generated.')
