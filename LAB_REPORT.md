@@ -7,17 +7,6 @@
 
 ---
 
-### Student Identification
-
-| Attribute | Value |
-| :--- | :--- |
-| **Name** | Mehak Sayed Yusuf |
-| **USN** | 01FE24BCI012 |
-| **Division** | B |
-| **Roll Number** | 202 |
-
----
-
 ## 1. Experiment Aim & Objectives
 
 The primary aim of this experiment is to evaluate and compare the CPU compute performance, execution throughput, and latency characteristics of two fundamental hypervisor architectures:
@@ -231,8 +220,4 @@ The quantitative observations demonstrate a distinct performance advantage for T
 2. Type-1 hypervisors exhibit significantly lower latency variability and fewer peak spikes (1.34 ms vs 1.89 ms), making them indispensable for production cloud environments and mission-critical enterprise workloads.
 3. Type-2 hypervisors remain highly valuable for rapid software testing, desktop sandboxing, and educational use cases where host desktop integration and ease of deployment are prioritized.
 
----
-
-**Student Name:** Mehak Sayed Yusuf  
-**USN:** 01FE24BCI012 | **Division:** B | **Roll No:** 202  
-**Date:** September 24, 2026  
+  
